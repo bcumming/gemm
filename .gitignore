@@ -1,0 +1,7 @@
+gemm
+results*
+
+*.swp
+*.swn
+*.swo
+*.swq
