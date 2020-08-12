@@ -1,0 +1,7 @@
+ROCBLAS_ROOT=/opt/rocm-3.6.0/rocblas
+gemm : gemm.cpp
+	nvcc -DGEMMCUDA -std=c++11 -O3 gemm.cpp -o gemm -lcublas
+
+clean :
+	rm -f gemm
+	rm -f a.out
