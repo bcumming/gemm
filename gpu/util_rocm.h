@@ -25,7 +25,7 @@ static rocblas_handle get_blas_handle() {
 }
 
 void device_synchronize() {
-    cudaDeviceSynchronize();
+    hipDeviceSynchronize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ template <typename T>
 T* malloc_device(size_t n) {
     void* p;
     auto status = hipMalloc(&p, n*sizeof(T));
-    rocm_check_status(status);
+    check_status(status);
     return (T*)p;
 }
 
@@ -60,14 +60,14 @@ T* malloc_device(size_t n) {
 template <typename T>
 void copy_to_device(T* from, T* to, size_t n) {
     auto status = hipMemcpy(to, from, n*sizeof(T), hipMemcpyHostToDevice);
-    rocm_check_status(status);
+    check_status(status);
 }
 
 // copy n*T from device to host
 template <typename T>
 void copy_to_host(T* from, T* to, size_t n) {
     auto status = hipMemcpy(to, from, n*sizeof(T), hipMemcpyDeviceToHost);
-    rocm_check_status(status);
+    check_status(status);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ static void gemm(double* a, double*b, double*c,
           double alpha, double beta)
 {
     auto status = rocblas_dgemm(
-            get_rocblas_handle(),
+            get_blas_handle(),
             rocblas_operation_none, rocblas_operation_none,
             m, n, k,
             &alpha,
@@ -133,7 +133,7 @@ static void gemm(float* a, float*b, float*c,
           float alpha, float beta)
 {
     auto status = rocblas_sgemm(
-            get_rocblas_handle(),
+            get_blas_handle(),
             rocblas_operation_none, rocblas_operation_none,
             m, n, k,
             &alpha,
